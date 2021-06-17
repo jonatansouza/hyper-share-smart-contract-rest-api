@@ -20,9 +20,7 @@ class FabricNetworkProvider {
                 const network = await gateway.getNetwork('mychannel');
                 const contractCollection = network.getContract('hyper-share-smart-contract');
                 const buffer = await contractCollection.submitTransaction(contractName, ...args)
-                debug(buffer);
                 const strResult = buffer.toString();
-                debug(strResult);
                 const result = JSON.parse(strResult);
                 resolve(result);       
             } catch(e) {
