@@ -29,7 +29,8 @@ router.get('/owners/:ownerId/shared-data/:id', async (req, res, next) => {
     ])
     return res.status(200).json(result);
   } catch(e) {
-    return res.status(400).json({error: JSON.stringify(e)});
+    const {status, message} = getStatusAndMessage(e);
+    return res.status(status).json({message});
   }
 });
 
@@ -44,7 +45,7 @@ router.post('/owners/:ownerId/shared-data', async (req, res, next) => {
       sharedDataDescription,
       '' + new Date().getTime()
     ]);
-    return res.status(201).json({result});
+    return res.status(201).json(result);
   } catch(e) {
     const {status, message} = getStatusAndMessage(e);
     return res.status(status).json({message});
@@ -65,55 +66,111 @@ router.get('/owners/:id', async (req, res, next) => {
   }
 });
 
-router.patch('/shared-data/:id', (req, res, next) => {
-  const {id} = req.params;
-  res.json({
-    description: 'patch shared-data ' + id
-  });
+router.patch('/owners/:ownerId/shared-data/:id', async (req, res, next) => {
+  const { ownerId, id } = req.params;
+  const { sharedDataDescription } = req.body;
+  try {
+    const gateway = new FabricNetworkProvider();
+    const result = await gateway.submitTransaction('updateSharedData', [
+      id,
+      ownerId,
+      sharedDataDescription,
+      '' + new Date().getTime()
+    ]);
+    return res.status(200).json(result);
+  } catch(e) {
+    const {status, message} = getStatusAndMessage(e);
+    return res.status(status).json({message});
+  }
 });
 
 
-router.delete('/shared-data/:id', (req, res, next) => {
-  const {id} = req.params;
-  res.json({
-    description: 'delete shared-data ' + id
-  });
+router.delete('/owners/:ownerId/shared-data/:id', async (req, res, next) => {
+  const { ownerId, id } = req.params;
+  try {
+    const gateway = new FabricNetworkProvider();
+    const result = await gateway.submitTransaction('deleteSharedData', [
+      id,
+      ownerId
+    ]);
+    return res.status(202).json(result);
+  } catch(e) {
+    const {status, message} = getStatusAndMessage(e);
+    return res.status(status).json({message});
+  }
 });
 
-router.post('/shared-data/:id/grant-access', (req, res, next) => {
-  const {id} = req.params;
-  res.json({
-    description: 'grantAccess ' + id
-  });
+router.post('/owners/:ownerId/shared-data/:id/grant-access', async (req, res, next) => {
+  const { ownerId, id } = req.params;
+  const { thirdUser } = req.body;
+  try {
+    const gateway = new FabricNetworkProvider();
+    const result = await gateway.submitTransaction('grantAccess', [
+      id,
+      ownerId,
+      thirdUser,
+      '' + new Date().getTime()
+    ]);
+    return res.status(200).json(result);
+  } catch(e) {
+    const {status, message} = getStatusAndMessage(e);
+    return res.status(status).json({message});
+  }
 });
 
-router.post('/shared-data/:id/revoke-access', (req, res, next) => {
-  const {id} = req.params;
-  res.json({
-    description: 'revokeAccess ' + id
-  });
+router.post('/owners/:ownerId/shared-data/:id/revoke-access', async (req, res, next) => {
+  const { ownerId, id } = req.params;
+  const { thirdUser } = req.body;
+  try {
+    const gateway = new FabricNetworkProvider();
+    const result = await gateway.submitTransaction('revokeAccess', [
+      id,
+      ownerId,
+      thirdUser,
+      '' + new Date().getTime()
+    ]);
+    return res.status(200).json(result);
+  } catch(e) {
+    const {status, message} = getStatusAndMessage(e);
+    return res.status(status).json({message});
+  }
 });
 
 
-router.post('/shared-data/:id/request-permission', (req, res, next) => {
-  const {id} = req.params;
-  res.json({
-    description: 'requestPermission ' + id
-  });
+router.post('/owners/:ownerId/shared-data/:id/request-permission', async (req, res, next) => {
+  const { ownerId, id } = req.params;
+  try {
+    const gateway = new FabricNetworkProvider();
+    const result = await gateway.submitTransaction('requestPermission', [
+      id,
+      ownerId,
+      '' + new Date().getTime()
+    ]);
+    if(result) {
+      return res.status(200).json(result);
+    }
+    return res.status(401).json(result);
+  } catch(e) {
+    const {status, message} = getStatusAndMessage(e);
+    return res.status(status).json({message});
+  }
 });
 
-router.get('/owners/:id', (req, res, next) => {
-  const {id} = req.params;
-  res.json({
-    description: 'byOwner ' + id 
-  });
-});
-
-router.get('/shared-data/:id/history', (req, res, next) => {
-  const {id} = req.params;
-  res.json({
-    description: 'history ' + id
-  });
+router.get('/owners/:ownerId/shared-data/:id/history', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const gateway = new FabricNetworkProvider();
+    const result = await gateway.submitTransaction('historySharedData', [
+      id
+    ]);
+    if(result) {
+      return res.status(200).json(result);
+    }
+    return res.status(401).json(result);
+  } catch(e) {
+    const {status, message} = getStatusAndMessage(e);
+    return res.status(status).json({message});
+  }
 });
 
 
