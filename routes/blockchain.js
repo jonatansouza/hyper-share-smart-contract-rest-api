@@ -59,7 +59,7 @@ router.get('/owners/:id', async (req, res, next) => {
     const result = await gateway.submitTransaction('allSharedDataFromOwner', [
       id
     ]);
-    return res.status(200).json({result});
+    return res.status(200).json(result);
   } catch(e) {
     const {status, message} = getStatusAndMessage(e);
     return res.status(status).json({message});
