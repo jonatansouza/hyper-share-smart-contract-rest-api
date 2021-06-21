@@ -11,7 +11,7 @@ class FabricNetworkProvider {
             try {
                 const connectionProfile = fs.readFileSync('wallet/connection-profile.json').toString();
                 const connProfile = JSON.parse(connectionProfile)
-                const wallet = await Wallets.newFileSystemWallet('wallet/Org1')
+                const wallet = await Wallets.newFileSystemWallet('wallet')
                 const gatewayOptions = {
                     identity: 'api-user',
                     wallet
