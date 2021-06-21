@@ -19,6 +19,20 @@ router.get('/', (req, res, next) => {
   });
 });
 
+router.head('/owners/:ownerId/shared-data/:id', async (req, res) => {
+  const { id, ownerId } = req.params;
+  try {
+    const gateway = new FabricNetworkProvider();
+    await gateway.submitTransaction('sharedDataExists', [
+      id
+    ])
+    return res.status(204);
+  } catch(e) {
+    return res.status(404);
+  }
+
+})
+
 router.get('/owners/:ownerId/shared-data/:id', async (req, res, next) => {
   const { id, ownerId } = req.params;
   try {
