@@ -23,12 +23,15 @@ router.head('/owners/:ownerId/shared-data/:id', async (req, res) => {
   const { id, ownerId } = req.params;
   try {
     const gateway = new FabricNetworkProvider();
-    await gateway.submitTransaction('sharedDataExists', [
+    const result = await gateway.submitTransaction('sharedDataExists', [
       id
     ])
-    return res.status(204);
+    if(result) {
+      return res.status(204).json({});
+    }
+    return res.status(404).json({});
   } catch(e) {
-    return res.status(404);
+    return res.status(404).json({});
   }
 
 })
