@@ -190,5 +190,20 @@ router.get('/owners/:ownerId/shared-data/:id/history', async (req, res, next) =>
   }
 });
 
+router.get('/owners/:id/shared-with-me', async (req, res, next) => {
+  const {id} = req.params;
+  try {
+    const gateway = new FabricNetworkProvider();
+    const result = await gateway.submitTransaction('AllSharedWithThird', [
+      id
+    ]);
+    return res.status(200).json(result);
+  } catch(e) {
+    const {status, message} = getStatusAndMessage(e);
+    return res.status(status).json({message});
+  }
+});
+
+
 
 module.exports = router;
