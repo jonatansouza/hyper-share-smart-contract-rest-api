@@ -53,13 +53,15 @@ router.get('/owners/:ownerId/shared-data/:id', async (req, res, next) => {
 
 router.post('/owners/:ownerId/shared-data', async (req, res, next) => {
   const { ownerId } = req.params;
-  const {sharedDataId, sharedDataDescription} = req.body;
+  const {sharedDataId, sharedDataDescription, bucket, resourceLocation} = req.body;
   try {
     const gateway = new FabricNetworkProvider();
     const result = await gateway.submitTransaction('createSharedData', [
       sharedDataId,
       ownerId,
       sharedDataDescription,
+      bucket,
+      resourceLocation,
       '' + new Date().getTime()
     ]);
     return res.status(201).json(result);
@@ -85,13 +87,15 @@ router.get('/owners/:id', async (req, res, next) => {
 
 router.patch('/owners/:ownerId/shared-data/:id', async (req, res, next) => {
   const { ownerId, id } = req.params;
-  const { sharedDataDescription } = req.body;
+  const { sharedDataDescription, bucket, resourceLocation } = req.body;
   try {
     const gateway = new FabricNetworkProvider();
     const result = await gateway.submitTransaction('updateSharedData', [
       id,
       ownerId,
       sharedDataDescription,
+      bucket,
+      resourceLocation,
       '' + new Date().getTime()
     ]);
     return res.status(200).json(result);
@@ -203,7 +207,5 @@ router.get('/owners/:id/shared-with-me', async (req, res, next) => {
     return res.status(status).json({message});
   }
 });
-
-
 
 module.exports = router;
